@@ -10,13 +10,10 @@ namespace Jarvis.Framework.Shared.IdentitySupport.Serialization
     {
         public static IIdentityConverter IdentityConverter { get; set; }
 
-        public object Deserialize(BsonReader bsonReader, Type nominalType, IBsonSerializationOptions options)
-        {
-            throw new NotImplementedException();
-        }
 
-        public object Deserialize(BsonReader bsonReader, Type nominalType, Type actualType, IBsonSerializationOptions options)
+        public object Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
+            var bsonReader = context.Reader;
             if (bsonReader.CurrentBsonType == BsonType.Null)
             {
                 bsonReader.ReadNull();
@@ -31,13 +28,10 @@ namespace Jarvis.Framework.Shared.IdentitySupport.Serialization
             return IdentityConverter.ToIdentity(id);
         }
 
-        public IBsonSerializationOptions GetDefaultSerializationOptions()
-        {
-            throw new NotImplementedException();
-        }
 
-        public void Serialize(BsonWriter bsonWriter, Type nominalType, object value, IBsonSerializationOptions options)
+        public void Serialize(BsonSerializationContext context, BsonSerializationArgs args, object value)
         {
+            var bsonWriter = context.Writer;
             if (value == null)
             {
                 bsonWriter.WriteNull();
@@ -47,5 +41,7 @@ namespace Jarvis.Framework.Shared.IdentitySupport.Serialization
                 bsonWriter.WriteString((EventStoreIdentity)value);
             }
         }
+
+        public Type ValueType => typeof(EventStoreIdentity);
     }
 }
