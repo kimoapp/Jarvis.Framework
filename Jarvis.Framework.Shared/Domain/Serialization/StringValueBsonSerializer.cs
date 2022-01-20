@@ -7,13 +7,15 @@ namespace Jarvis.Framework.Shared.Domain.Serialization
 {
     public class StringValueBsonSerializer : IBsonSerializer
     {
-        public object Deserialize(BsonReader bsonReader, Type nominalType, IBsonSerializationOptions options)
+        public StringValueBsonSerializer(Type t)
         {
-            throw new NotImplementedException();
+            ValueType = t;
         }
 
-        public object Deserialize(BsonReader bsonReader, Type nominalType, Type actualType, IBsonSerializationOptions options)
+        public object Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
         {
+            var bsonReader = context.Reader;
+            var nominalType = args.NominalType;
             if (bsonReader.CurrentBsonType == BsonType.Null)
             {
                 bsonReader.ReadNull();
@@ -24,13 +26,9 @@ namespace Jarvis.Framework.Shared.Domain.Serialization
             return Activator.CreateInstance(nominalType, new object[] {id});
         }
 
-        public IBsonSerializationOptions GetDefaultSerializationOptions()
+        public void Serialize(BsonSerializationContext context, BsonSerializationArgs args, object value)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Serialize(BsonWriter bsonWriter, Type nominalType, object value, IBsonSerializationOptions options)
-        {
+            var bsonWriter = context.Writer;
             if (value == null)
             {
                 bsonWriter.WriteNull();
@@ -39,6 +37,15 @@ namespace Jarvis.Framework.Shared.Domain.Serialization
             {
                 bsonWriter.WriteString((StringValue)value);
             }
+        }
+
+        public Type ValueType { get; }
+    }
+
+    public class StringValueBsonSerializer<T> : StringValueBsonSerializer
+    {
+        public StringValueBsonSerializer() : base(typeof(T))
+        {
         }
     }
 }
