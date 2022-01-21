@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Jarvis.Framework.MongoAppender</id>
-    <version>1.0.0</version>
+    <version>501.1.23</version>
     <authors>Proximo S.r.L.</authors>
     <owners>Proximo S.r.L.</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
