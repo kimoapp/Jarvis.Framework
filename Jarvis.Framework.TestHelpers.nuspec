@@ -12,7 +12,7 @@
     <tags>Jarvis,Framework</tags>
 
     <dependencies>
-        <dependency id="Jarvis.Framework" version="[$version$]" />
+        <dependency id="Jarvis.Framework" version="[501.1.3]" />
     </dependencies>
   </metadata>
 

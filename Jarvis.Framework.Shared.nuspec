@@ -12,7 +12,7 @@
     <tags>Jarvis,Framework</tags>
 
     <dependencies>
-	  <dependency id="Jarvis.Framework.NEventStoreEx" version="[$version$]" />
+	  <dependency id="Jarvis.Framework.NEventStoreEx" version="[501.1.3]" />
 		  
       <dependency id="NEventStore" version="[505.1.1]" />
       <dependency id="NEventStore.Persistence.MongoDb" version="[505.0.0.106]" />

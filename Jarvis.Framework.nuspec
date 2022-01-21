@@ -12,8 +12,8 @@
     <tags>Jarvis,Framework</tags>
 
     <dependencies>
-	  <dependency id="Jarvis.Framework.NEventStoreEx" version="[$version$]" />
-	  <dependency id="Jarvis.Framework.Shared" version="[$version$]" />
+	  <dependency id="Jarvis.Framework.NEventStoreEx" version="[501.1.3]" />
+	  <dependency id="Jarvis.Framework.Shared" version="[501.1.3]" />
 		 
 		 
       <dependency id="NEventStore" version="[505.1.1]" />
