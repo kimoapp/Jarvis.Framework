@@ -16,9 +16,9 @@
 	  <dependency id="Jarvis.Framework.Shared" version="[$version$]" />
 		 
 		 
-      <dependency id="NEventStore" version="[5.1.1]" />
-      <dependency id="NEventStore.Persistence.MongoDb" version="[5.0.0.106]" />
-      <dependency id="mongocsharpdriver" version="1.10.0" />
+      <dependency id="NEventStore" version="[505.1.1]" />
+      <dependency id="NEventStore.Persistence.MongoDb" version="[505.0.0.106]" />
+      <dependency id="mongocsharpdriver" version="2.14.1" />
       <dependency id="Newtonsoft.Json" version="6.0.8" />
 
       <dependency id="Castle.Core" version="3.3.3" />
