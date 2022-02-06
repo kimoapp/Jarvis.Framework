@@ -67,6 +67,27 @@ namespace Jarvis.Framework.Tests.SharedTests
             mapCount = _mappingFlatCollection.FindAll();
             Assert.That(mapCount.Count(), Is.EqualTo(0));
         }
+
+        /// <summary>
+        /// The method 'MapIdentity' uses the message of the MongoWriteConcernException
+        /// to recognize duplicate keys. We test that this works.
+        /// </summary>
+        [Test]
+        public void Verify_MapIdentity_WhenIdentityAlreadyExists()
+        {
+            var id = new TestId(1);
+
+            sut.LinkKeysTest("TEST", id);
+            var mapCount = _mappingCollection.FindAll();
+            Assert.That(mapCount.Count(), Is.EqualTo(1));
+
+            var actualId = sut.LinkKeysTest("TEST", id);
+
+            Assert.AreEqual(id, actualId);
+
+            mapCount = _mappingCollection.FindAll();
+            Assert.That(mapCount.Count(), Is.EqualTo(1));
+        }
     }
 
     public class TestMapper : AbstractIdentityTranslator<TestId>
@@ -82,10 +103,14 @@ namespace Jarvis.Framework.Tests.SharedTests
             base.ReplaceAlias(id, value);
         }
 
-
         public TestId Map(String value)
         {
             return Translate(value);
+        }
+
+        public TestId LinkKeysTest(string externalKey, TestId key)
+        {
+            return LinkKeys(externalKey, key);
         }
     }
 
