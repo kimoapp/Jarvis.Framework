@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -54,19 +55,19 @@ namespace Jarvis.Framework.Bus.Rebus.Integration.Support
             MessagesTracker = messagesTracker;
         }
 
-        public void StartWithAppConfig()
-        {
-            var busConfiguration = CreateDefaultBusConfiguration();
+        //public void StartWithAppConfig()
+        //{
+        //    var busConfiguration = CreateDefaultBusConfiguration();
 
-            var bus = busConfiguration
-                .Transport(t => t.UseMsmqAndGetInputQueueNameFromAppConfig())
-                .MessageOwnership(d => d.FromRebusConfigurationSection())
-                .CreateBus();
+        //    var bus = busConfiguration
+        //        .Transport(t => t.UseMsmqAndGetInputQueueNameFromAppConfig())
+        //        .MessageOwnership(d => d.FromRebusConfigurationSection())
+        //        .CreateBus();
 
-            FixTiemoutHack();
+        //    FixTiemoutHack();
 
-            bus.Start();
-        }
+        //    bus.Start();
+        //}
 
         RebusConfigurer CreateDefaultBusConfiguration()
         {
@@ -78,6 +79,18 @@ namespace Jarvis.Framework.Bus.Rebus.Integration.Support
                 .Events(e => e.MessageSent += OnMessageSent)
                 .Events(e => e.PoisonMessage += OnPoisonMessage)
                 .SpecifyOrderOfHandlers(pipeline => pipeline.Use(new RemoveDefaultTimeoutReplyHandlerFilter()));
+
+            //Windows on ARM doesn't support MSMQ, so we allow the caller to customize the transport
+            if (Configuration.CustomTransportSetupAction != null)
+            {
+                busConfiguration.Transport(t => Configuration.CustomTransportSetupAction(t));
+            }
+            else
+            {
+                busConfiguration = busConfiguration
+                    .Transport(t => t.UseMsmq(Configuration.InputQueue, Configuration.ErrorQueue));
+            }
+
             return busConfiguration;
         }
 
@@ -110,7 +123,8 @@ or manually set the Configuration property of this instance.");
             Dictionary<String, String> endpointsMap = Configuration.EndpointsMap;
 
             var bus = busConfiguration
-                .Transport(t => t.UseMsmq(inputQueueName, errorQueueName))
+                //Windows on ARM doesn't support MSMQ, so we allow the caller to customize the transport
+                //.Transport(t => t.UseMsmq(inputQueueName, errorQueueName))
                 .MessageOwnership(mo => mo.Use(new JarvisDetermineMessageOwnershipFromConfigurationManager(endpointsMap)))
                 .Behavior(b => b.SetMaxRetriesFor<Exception>(Configuration.MaxRetry))
                 .CreateBus();
